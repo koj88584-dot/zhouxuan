@@ -24,6 +24,11 @@ function AdminSetupRequired({ mode = 'setup' }: { mode?: 'setup' | 'unavailable'
   )
 }
 
+function isNextControlFlowError(error: unknown) {
+  const digest = (error as { digest?: unknown } | null)?.digest
+  return typeof digest === 'string' && (digest.startsWith('NEXT_REDIRECT') || digest.startsWith('NEXT_NOT_FOUND'))
+}
+
 export const generateMetadata = async ({
   params,
   searchParams,
@@ -47,6 +52,8 @@ export const generateMetadata = async ({
       searchParams,
     })
   } catch (error) {
+    if (isNextControlFlowError(error)) throw error
+
     console.error('Failed to generate Payload admin metadata:', error)
     return {
       title: 'Admin unavailable | Oasis Spa',
@@ -74,6 +81,8 @@ export default async function PayloadAdminPage({ params, searchParams }: AdminPa
       searchParams,
     })
   } catch (error) {
+    if (isNextControlFlowError(error)) throw error
+
     console.error('Failed to render Payload admin page:', error)
     return <AdminSetupRequired mode="unavailable" />
   }
