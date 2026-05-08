@@ -7,7 +7,15 @@ type AdminPageProps = {
 
 const isPayloadConfigured = () =>
   process.env.PAYLOAD_DATABASE_DISABLED !== '1' &&
-  Boolean(process.env.DATABASE_URL && process.env.PAYLOAD_SECRET)
+  Boolean(process.env.PAYLOAD_SECRET) &&
+  (() => {
+    try {
+      const url = new URL(process.env.DATABASE_URL || '')
+      return url.protocol === 'postgres:' || url.protocol === 'postgresql:'
+    } catch {
+      return false
+    }
+  })()
 
 export const generateMetadata = async ({
   params,

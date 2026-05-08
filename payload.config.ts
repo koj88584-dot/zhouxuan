@@ -18,8 +18,22 @@ import { SiteSettings } from './src/globals/SiteSettings'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 const localDatabaseURL = 'postgresql://payload:payload@127.0.0.1:5432/oasis_spa'
+const isPostgresDatabaseURL = (value?: string) => {
+  try {
+    const url = new URL(value || '')
+    return url.protocol === 'postgres:' || url.protocol === 'postgresql:'
+  } catch {
+    return false
+  }
+}
 const databaseURL =
-  process.env.PAYLOAD_DATABASE_DISABLED === '1' ? '' : process.env.DATABASE_URL || localDatabaseURL
+  process.env.PAYLOAD_DATABASE_DISABLED === '1'
+    ? ''
+    : isPostgresDatabaseURL(process.env.DATABASE_URL)
+      ? process.env.DATABASE_URL
+      : process.env.DATABASE_URL
+        ? ''
+        : localDatabaseURL
 
 export default buildConfig({
   secret: process.env.PAYLOAD_SECRET || 'dev-only-secret-change-me',

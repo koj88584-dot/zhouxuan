@@ -6,8 +6,17 @@ declare global {
 
 const isPayloadDatabaseDisabled = () => process.env.PAYLOAD_DATABASE_DISABLED === '1'
 
+function hasPostgresDatabaseURL() {
+  try {
+    const url = new URL(process.env.DATABASE_URL || '')
+    return url.protocol === 'postgres:' || url.protocol === 'postgresql:'
+  } catch {
+    return false
+  }
+}
+
 export async function getPayloadClient() {
-  if (isPayloadDatabaseDisabled() || !process.env.DATABASE_URL || !process.env.PAYLOAD_SECRET) {
+  if (isPayloadDatabaseDisabled() || !hasPostgresDatabaseURL() || !process.env.PAYLOAD_SECRET) {
     return null
   }
 
