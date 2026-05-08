@@ -26,7 +26,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  serverExternalPackages: ['@payloadcms/db-postgres'],
 }
 
 export default hasPayloadDatabase ? withPayload(nextConfig) : nextConfig
