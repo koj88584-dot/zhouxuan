@@ -61,7 +61,8 @@ await verifyDatabase(databaseUrl)
 console.log('Database connection verified.')
 
 console.log('Writing Netlify production admin environment...')
-runNetlify(['env:set', 'DATABASE_URL', databaseUrl, '--secret', '--force'])
+runNetlify(['env:set', 'DATABASE_URL', databaseUrl, '--force'])
+runNetlify(['env:set', 'DATABASE_URL', '--secret', '--force'])
 runNetlify(['env:set', 'PAYLOAD_DATABASE_DISABLED', '0', '--force'])
 
 if (shouldDeploy) {
