@@ -709,7 +709,7 @@ export interface SiteSetting {
     addressLine1: string;
     addressLine2: string;
     phone: string;
-    email: string;
+    email?: string | null;
     mapQuery: string;
   };
   hours?:

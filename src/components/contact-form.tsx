@@ -40,6 +40,7 @@ export function ContactForm({ services, locale = defaultLocale }: { services: Se
             success?: boolean
             persisted?: boolean
             notified?: boolean
+            stored?: boolean
           }
 
           if (!response.ok) {
@@ -49,7 +50,7 @@ export function ContactForm({ services, locale = defaultLocale }: { services: Se
 
           setForm(initialState)
           setFeedback(
-            data.persisted || data.notified
+            data.persisted || data.notified || data.stored
               ? copy.contactForm.success
               : copy.contactForm.setup,
           )

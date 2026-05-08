@@ -1,3 +1,4 @@
+import { getSpaTodayIso } from '@/lib/date'
 import { bookingSchema, inquirySchema } from '@/lib/validation'
 
 describe('inquirySchema', () => {
@@ -30,6 +31,10 @@ describe('inquirySchema', () => {
 })
 
 describe('bookingSchema', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
   it('accepts a complete booking request', () => {
     const result = bookingSchema.safeParse({
       serviceSlug: 'body-massage',
@@ -65,5 +70,24 @@ describe('bookingSchema', () => {
     expect(issues).toContain('serviceSlug')
     expect(issues).toContain('preferredDate')
     expect(issues).toContain('phone')
+  })
+
+  it('uses the spa timezone when validating same-day bookings', () => {
+    vi.setSystemTime(new Date('2026-05-09T02:30:00.000Z'))
+
+    expect(getSpaTodayIso()).toBe('2026-05-08')
+
+    const result = bookingSchema.safeParse({
+      serviceSlug: 'body-massage',
+      technicianSlug: 'any',
+      preferredDate: '2026-05-08',
+      preferredTime: '7:00 PM',
+      durationPreference: '60 minutes',
+      name: 'Avery Chen',
+      phone: '6085550188',
+      email: 'avery@example.com',
+    })
+
+    expect(result.success).toBe(true)
   })
 })

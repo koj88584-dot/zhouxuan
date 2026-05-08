@@ -1,8 +1,8 @@
 import { z } from 'zod'
+import { getSpaTodayIso } from '@/lib/date'
 
 function isTodayOrFuture(value: string) {
-  const today = new Date().toISOString().slice(0, 10)
-  return value >= today
+  return value >= getSpaTodayIso()
 }
 
 export const inquirySchema = z.object({

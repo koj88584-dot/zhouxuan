@@ -88,7 +88,7 @@ async function fetchSquareCatalogSummary(service: ServiceDoc): Promise<SquareSyn
 
 export async function runSquareSync(): Promise<SquareSyncSummary> {
   const payload = await getPayloadClient()
-  const services = payload
+  const payloadServices = payload
     ? ((await payload.find({
         collection: 'services',
         depth: 0,
@@ -97,25 +97,15 @@ export async function runSquareSync(): Promise<SquareSyncSummary> {
       })).docs as unknown as ServiceDoc[])
     : []
 
-  const sourceServices = services.length ? services : []
-  const syncTarget = sourceServices.length ? sourceServices : []
-
-  if (!payload && syncTarget.length === 0) {
-    const fallbackServices = (await import('@/lib/default-content')).servicesSeed
-    const summaryEntries = await Promise.all(fallbackServices.map(fetchSquareCatalogSummary))
-    return {
-      syncedAt: new Date().toISOString(),
-      live: Boolean(process.env.SQUARE_ACCESS_TOKEN),
-      services: summaryEntries,
-    }
-  }
+  const fallbackServices = payloadServices.length ? [] : (await import('@/lib/default-content')).servicesSeed
+  const syncTarget = payloadServices.length ? payloadServices : fallbackServices
 
   const summaryEntries = await Promise.all(syncTarget.map(fetchSquareCatalogSummary))
 
-  if (payload) {
+  if (payload && payloadServices.length) {
     await Promise.all(
       summaryEntries.map(async (entry) => {
-        const service = sourceServices.find((current) => current.slug === entry.slug)
+        const service = payloadServices.find((current) => current.slug === entry.slug)
         if (!service) return
 
         await payload.update({

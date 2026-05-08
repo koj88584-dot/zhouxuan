@@ -3,27 +3,16 @@ import type { ServerFunctionClient } from 'payload'
 import '@payloadcms/next/css'
 import React from 'react'
 import '@/app/(payload)/custom.scss'
+import { isPayloadConfigured } from '@/lib/payload-status'
 
 export const metadata: Metadata = {
-  title: 'Payload Admin | Verdant Meridian Spa',
+  title: 'Payload Admin | Oasis Spa',
   description: 'Editorial spa content administration',
 }
 
 type LayoutProps = {
   children: React.ReactNode
 }
-
-const isPayloadConfigured = () =>
-  process.env.PAYLOAD_DATABASE_DISABLED !== '1' &&
-  Boolean(process.env.PAYLOAD_SECRET) &&
-  (() => {
-    try {
-      const url = new URL(process.env.DATABASE_URL || '')
-      return url.protocol === 'postgres:' || url.protocol === 'postgresql:'
-    } catch {
-      return false
-    }
-  })()
 
 const serverFunction: ServerFunctionClient = async function (args) {
   'use server'
@@ -35,7 +24,7 @@ const serverFunction: ServerFunctionClient = async function (args) {
     const config = await import('@/payload-config')
     const { importMap } = await import('@/app/(payload)/admin/importMap')
 
-    return handleServerFunctions({
+    return await handleServerFunctions({
       ...args,
       config: config.default,
       importMap,

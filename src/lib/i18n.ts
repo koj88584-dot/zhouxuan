@@ -36,6 +36,8 @@ const zhDayLabels: Record<string, string> = {
 
 const zhHourLabels: Record<string, string> = {
   'By appointment': '预约制',
+  '9:30 AM - 9:00 PM': '上午 9:30 - 晚上 9:00',
+  '9:30 AM - 8:00 PM': '上午 9:30 - 晚上 8:00',
 }
 
 const zhSiteHeroFeatures: SiteSettings['heroFeatures'] = [

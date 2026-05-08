@@ -3,15 +3,13 @@
 import { useMemo, useState, useTransition } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { CalendarCheck, CheckCircle2, Clock, Loader2, UserRound } from 'lucide-react'
+import { canTechnicianPerformService } from '@/lib/booking'
+import { getSpaTodayIso } from '@/lib/date'
 import { defaultLocale, getUiCopy, type Locale } from '@/lib/i18n'
 import type { ServiceDoc, TechnicianDoc } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 const timeSlots = ['10:00 AM', '11:30 AM', '1:00 PM', '2:30 PM', '4:00 PM', '5:30 PM', '7:00 PM']
-
-function todayIso() {
-  return new Date().toISOString().slice(0, 10)
-}
 
 export function BookingForm({
   services,
@@ -31,7 +29,7 @@ export function BookingForm({
 
   const [serviceSlug, setServiceSlug] = useState(initialService)
   const [technicianSlug, setTechnicianSlug] = useState('any')
-  const [preferredDate, setPreferredDate] = useState(todayIso())
+  const [preferredDate, setPreferredDate] = useState(getSpaTodayIso())
   const [preferredTime, setPreferredTime] = useState(timeSlots[2])
   const [durationPreference, setDurationPreference] = useState('Best fit')
   const [name, setName] = useState('')
@@ -45,10 +43,7 @@ export function BookingForm({
   const availableTechnicians = useMemo(
     () =>
       technicians.filter(
-        (technician) =>
-          technician.slug === 'any-available' ||
-          technician.serviceSlugs.length === 0 ||
-          technician.serviceSlugs.includes(serviceSlug),
+        (technician) => canTechnicianPerformService(technician, serviceSlug),
       ),
     [serviceSlug, technicians],
   )
@@ -94,6 +89,7 @@ export function BookingForm({
             success?: boolean
             persisted?: boolean
             notified?: boolean
+            stored?: boolean
           }
 
           if (!response.ok) {
@@ -110,7 +106,7 @@ export function BookingForm({
           setNotes('')
           setFeedback({
             type: 'success',
-            message: data.persisted || data.notified ? copy.bookingForm.success : copy.bookingForm.submitted,
+            message: data.persisted || data.notified || data.stored ? copy.bookingForm.success : copy.bookingForm.submitted,
           })
         })
       }}
@@ -203,7 +199,7 @@ export function BookingForm({
               <input
                 type="date"
                 required
-                min={todayIso()}
+                min={getSpaTodayIso()}
                 value={preferredDate}
                 onChange={(event) => setPreferredDate(event.target.value)}
                 className="min-h-12 w-full min-w-0 rounded-2xl border border-olive-200 bg-olive-50/70 px-4 py-3 outline-none transition focus:border-olive-500"

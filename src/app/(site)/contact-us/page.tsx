@@ -1,5 +1,6 @@
 import { ContactForm } from '@/components/contact-form'
 import { PageHero } from '@/components/page-hero'
+import { getContactHref } from '@/lib/contact'
 import { getPageBySlug, getServices, getSiteSettings } from '@/lib/content'
 import { getUiCopy } from '@/lib/i18n'
 import { getCurrentLocale } from '@/lib/i18n-server'
@@ -39,9 +40,21 @@ export default async function ContactPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-olive-600">{copy.contact.visitStudio}</p>
             <h2 className="mt-4 text-3xl text-olive-950">{copy.contact.locationHours}</h2>
             <div className="mt-5 space-y-2 text-sm leading-7 text-olive-800">
-              {contactLines.map((line) => (
-                <p key={line}>{line}</p>
-              ))}
+              {contactLines.map((line) => {
+                const href = getContactHref(line)
+
+                return (
+                  <p key={line}>
+                    {href ? (
+                      <a href={href} className="font-semibold transition hover:text-olive-950">
+                        {line}
+                      </a>
+                    ) : (
+                      line
+                    )}
+                  </p>
+                )
+              })}
               {!contactLines.length ? <p>{copy.contact.fallback}</p> : null}
             </div>
             <div className="mt-6 space-y-2 text-sm text-olive-700">

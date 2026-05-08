@@ -1,3 +1,5 @@
+import { isPayloadConfigured } from '@/lib/payload-status'
+
 type PayloadRouteContext = {
   params: Promise<{
     slug?: string[]
@@ -10,18 +12,6 @@ type PayloadRouteHandler = (
 ) => Response | Promise<Response>
 
 type PayloadHandlerFactory = (config: Promise<unknown>) => PayloadRouteHandler
-
-const isPayloadConfigured = () =>
-  process.env.PAYLOAD_DATABASE_DISABLED !== '1' &&
-  Boolean(process.env.PAYLOAD_SECRET) &&
-  (() => {
-    try {
-      const url = new URL(process.env.DATABASE_URL || '')
-      return url.protocol === 'postgres:' || url.protocol === 'postgresql:'
-    } catch {
-      return false
-    }
-  })()
 
 const unavailableResponse = () =>
   Response.json(
@@ -51,13 +41,18 @@ async function handlePayloadRoute(
     return unavailableResponse()
   }
 
-  const [{ default: payloadConfig }, createHandler] = await Promise.all([
-    import('@/payload-config'),
-    handlerLoaders[method](),
-  ])
-  const handler = (createHandler as PayloadHandlerFactory)(Promise.resolve(payloadConfig))
+  try {
+    const [{ default: payloadConfig }, createHandler] = await Promise.all([
+      import('@/payload-config'),
+      handlerLoaders[method](),
+    ])
+    const handler = (createHandler as PayloadHandlerFactory)(Promise.resolve(payloadConfig))
 
-  return handler(request, context)
+    return await handler(request, context)
+  } catch (error) {
+    console.error('Payload API request failed:', error)
+    return unavailableResponse()
+  }
 }
 
 export const GET = (request: Request, context: PayloadRouteContext) =>

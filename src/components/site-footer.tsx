@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { getContactHref } from '@/lib/contact'
 import { getUiCopy, type Locale } from '@/lib/i18n'
 import type { SiteSettings } from '@/lib/types'
 
@@ -22,9 +23,21 @@ export function SiteFooter({ settings, locale }: { settings: SiteSettings; local
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.32em] text-stone-500">{copy.footer.visit}</p>
           <div className="mt-4 space-y-2 text-sm">
-            {contactLines.map((line) => (
-              <p key={line}>{line}</p>
-            ))}
+            {contactLines.map((line) => {
+              const href = getContactHref(line)
+
+              return (
+                <p key={line}>
+                  {href ? (
+                    <a href={href} className="transition hover:text-ivory">
+                      {line}
+                    </a>
+                  ) : (
+                    line
+                  )}
+                </p>
+              )
+            })}
             {!contactLines.length ? <p>{copy.footer.contactFallback}</p> : null}
           </div>
           <div className="mt-6 space-y-2 text-sm text-stone-400">

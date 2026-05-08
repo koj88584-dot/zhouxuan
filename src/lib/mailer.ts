@@ -1,6 +1,8 @@
 import nodemailer from 'nodemailer'
 import type { InquiryInput } from '@/lib/types'
 
+const smtpTimeoutMs = 8_000
+
 function getTransport() {
   if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
     return null
@@ -10,6 +12,9 @@ function getTransport() {
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT || 587),
     secure: Number(process.env.SMTP_PORT || 587) === 465,
+    connectionTimeout: smtpTimeoutMs,
+    greetingTimeout: smtpTimeoutMs,
+    socketTimeout: smtpTimeoutMs,
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
@@ -21,7 +26,10 @@ export function canSendInquiryNotifications() {
   return Boolean(getTransport() && process.env.CONTACT_NOTIFICATION_TO && process.env.SMTP_FROM)
 }
 
-export async function sendInquiryNotification(input: InquiryInput) {
+export async function sendInquiryNotification(
+  input: InquiryInput,
+  options: { subject?: string } = {},
+) {
   const transporter = getTransport()
   const target = process.env.CONTACT_NOTIFICATION_TO
   const from = process.env.SMTP_FROM
@@ -35,7 +43,7 @@ export async function sendInquiryNotification(input: InquiryInput) {
       from,
       to: target,
       replyTo: input.email,
-      subject: `New spa inquiry from ${input.name}`,
+      subject: options.subject || `New spa inquiry from ${input.name}`,
       text: [
         `Name: ${input.name}`,
         `Email: ${input.email}`,

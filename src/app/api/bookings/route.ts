@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { sendInquiryNotification } from '@/lib/mailer'
+import { canTechnicianPerformService } from '@/lib/booking'
 import { getServices, getTechnicians } from '@/lib/content'
 import { getPayloadClient } from '@/lib/payload'
 import { saveSubmissionToBlob } from '@/lib/submission-store'
@@ -35,6 +36,13 @@ export async function POST(request: Request) {
     )
   }
 
+  if (!canTechnicianPerformService(technician, service.slug)) {
+    return NextResponse.json(
+      { errors: { technicianSlug: 'That technician is not available for this service.' } },
+      { status: 400 },
+    )
+  }
+
   let persisted = false
   let stored = false
 
@@ -64,23 +72,26 @@ export async function POST(request: Request) {
     }
   }
 
-  const notification = await sendInquiryNotification({
-    name: parsed.data.name,
-    email: parsed.data.email,
-    phone: parsed.data.phone,
-    serviceSlug: service.slug,
-    message: [
-      'New booking request',
-      `Service: ${service.title}`,
-      `Technician: ${technician.name}`,
-      `Date: ${parsed.data.preferredDate}`,
-      `Time: ${parsed.data.preferredTime}`,
-      `Duration: ${parsed.data.durationPreference}`,
-      parsed.data.notes ? `Notes: ${parsed.data.notes}` : undefined,
-    ]
-      .filter(Boolean)
-      .join('\n'),
-  })
+  const notification = await sendInquiryNotification(
+    {
+      name: parsed.data.name,
+      email: parsed.data.email,
+      phone: parsed.data.phone,
+      serviceSlug: service.slug,
+      message: [
+        'New booking request',
+        `Service: ${service.title}`,
+        `Technician: ${technician.name}`,
+        `Date: ${parsed.data.preferredDate}`,
+        `Time: ${parsed.data.preferredTime}`,
+        `Duration: ${parsed.data.durationPreference}`,
+        parsed.data.notes ? `Notes: ${parsed.data.notes}` : undefined,
+      ]
+        .filter(Boolean)
+        .join('\n'),
+    },
+    { subject: `New spa booking request from ${parsed.data.name}` },
+  )
 
   if (!persisted && !notification.sent) {
     const fallback = await saveSubmissionToBlob('booking', {

@@ -58,6 +58,18 @@ function mergeNavLinks(seed: SiteSettings['primaryNav'], docs: unknown) {
   return Array.from(merged.values())
 }
 
+function normalizeContactInfo(seed: SiteSettings['contact'], doc: unknown): SiteSettings['contact'] {
+  const contact = (doc || {}) as Partial<Record<keyof SiteSettings['contact'], unknown>>
+
+  return {
+    addressLine1: String(contact.addressLine1 || seed.addressLine1),
+    addressLine2: String(contact.addressLine2 || seed.addressLine2),
+    phone: String(contact.phone || seed.phone),
+    email: String(contact.email || seed.email || ''),
+    mapQuery: String(contact.mapQuery || seed.mapQuery),
+  }
+}
+
 function sortServices(services: ServiceDoc[]) {
   return [...services].sort((left, right) => {
     const leftOrder = serviceOrderMap.get(left.slug) ?? Number.MAX_SAFE_INTEGER
@@ -157,10 +169,7 @@ export async function getSiteSettings(locale: Locale = defaultLocale): Promise<S
       ...siteSettingsSeed,
       ...globalDoc,
       bookingUrl: '/booking',
-      contact: {
-        ...siteSettingsSeed.contact,
-        ...(globalDoc.contact || {}),
-      },
+      contact: normalizeContactInfo(siteSettingsSeed.contact, globalDoc.contact),
       hours: Array.isArray(globalDoc.hours) && globalDoc.hours.length ? globalDoc.hours : siteSettingsSeed.hours,
       socials:
         Array.isArray(globalDoc.socials) && globalDoc.socials.length ? globalDoc.socials : siteSettingsSeed.socials,

@@ -69,7 +69,7 @@ export const SiteSettings: GlobalConfig = {
         { name: 'addressLine1', type: 'text', label: fieldLabels.addressLine1, required: true },
         { name: 'addressLine2', type: 'text', label: fieldLabels.addressLine2, required: true },
         { name: 'phone', type: 'text', label: fieldLabels.phone, required: true },
-        { name: 'email', type: 'email', label: fieldLabels.email, required: true },
+        { name: 'email', type: 'email', label: fieldLabels.email },
         { name: 'mapQuery', type: 'text', label: fieldLabels.mapQuery, required: true },
       ],
     },
