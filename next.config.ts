@@ -19,6 +19,7 @@ const nextConfig: NextConfig = {
     isrFlushToDisk: false,
   },
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
