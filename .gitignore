@@ -1,0 +1,20 @@
+.next
+node_modules
+.env
+.env.local
+.env.production
+.npm-cache
+.tools
+coverage
+playwright-report
+test-results
+payload-generated-schema.ts
+*.log
+*.tsbuildinfo
+.codex-*
+.next-start-*
+.tmp-*
+tmp-site.js
+
+# Local Netlify folder
+.netlify

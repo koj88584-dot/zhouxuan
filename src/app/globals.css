@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@theme {
+  --color-olive-50: #f7f5f1;
+  --color-olive-100: #ece8df;
+  --color-olive-200: #ddd6c8;
+  --color-olive-300: #c4b8a4;
+  --color-olive-500: #6f7b69;
+  --color-olive-600: #435b4b;
+  --color-olive-700: #2f4a3b;
+  --color-olive-800: #274b3a;
+  --color-olive-900: #1c3529;
+  --color-olive-950: #10261d;
+  --color-ivory: #fcfaf7;
+  --color-sand: #f3f2ef;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(39, 75, 58, 0.1), transparent 26%),
+    radial-gradient(circle at 82% 18%, rgba(219, 209, 192, 0.35), transparent 23%),
+    linear-gradient(180deg, #fcfaf7 0%, #f3f2ef 52%, #ece7dd 100%);
+  color: #1c3529;
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.7), transparent 32%),
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.55), transparent 64%);
+  opacity: 0.9;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display), serif;
+  letter-spacing: -0.03em;
+}
+
+body,
+button,
+input,
+textarea,
+select {
+  font-family: var(--font-body), sans-serif;
+}
+
+a:not([class]) {
+  color: inherit;
+}
+
+::selection {
+  background: rgba(39, 75, 58, 0.18);
+}
+
+.grain {
+  position: relative;
+}
+
+.grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.45) 0, transparent 26%),
+    radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.18) 0, transparent 22%),
+    radial-gradient(circle at 50% 80%, rgba(0, 0, 0, 0.14) 0, transparent 30%);
+}
