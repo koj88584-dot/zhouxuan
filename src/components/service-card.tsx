@@ -1,24 +1,32 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { getUiCopy, type Locale, defaultLocale } from '@/lib/i18n'
-import type { ServiceDoc } from '@/lib/types'
+import { Phone } from 'lucide-react'
 import { ServiceIcon } from '@/components/service-icon'
 import { serviceImageBySlug } from '@/lib/site-media'
+import { defaultLocale, getUiCopy, type Locale } from '@/lib/i18n'
+import type { ServiceDoc } from '@/lib/types'
+
+function shortenDuration(duration: string): string {
+  const parts = duration
+    .split('/')
+    .map((d) => d.replace(/min/i, '').trim())
+    .filter(Boolean)
+  if (parts.length <= 0) return duration
+  if (parts.length === 1) return parts[0] + ' min'
+  if (parts.length === 2) return parts[0] + ' / ' + parts[1] + ' min'
+  return parts[0] + '-' + parts[parts.length - 1] + ' min'
+}
 
 export function ServiceCard({ service, locale = defaultLocale }: { service: ServiceDoc; locale?: Locale }) {
   const copy = getUiCopy(locale)
   const priceText =
-    service.displayPriceMode === 'custom'
+    (service.displayPriceMode || 'square') === 'custom'
       ? service.priceLabel
       : service.displayPriceMode === 'square'
         ? service.priceLabel || copy.serviceCard.squarePricing
         : undefined
 
   const imageSrc = serviceImageBySlug[service.slug]
-  const bookingHref =
-    service.ctaType === 'booking'
-      ? `/booking?service=${encodeURIComponent(service.slug)}`
-      : service.binding.giftCardUrl || '/gift-cards'
 
   return (
     <article className="group flex h-full flex-col justify-between rounded-[1.9rem] border border-white/85 bg-white/90 p-4 shadow-[0_18px_44px_rgba(23,35,29,0.08)] backdrop-blur transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_56px_rgba(23,35,29,0.12)]">
@@ -43,7 +51,7 @@ export function ServiceCard({ service, locale = defaultLocale }: { service: Serv
               <p className="mt-2 text-2xl text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)]">{service.title}</p>
             </div>
             <span className="rounded-full bg-white/84 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-olive-700">
-              {service.duration}
+              {shortenDuration(service.duration)}
             </span>
           </div>
         </div>
@@ -54,12 +62,13 @@ export function ServiceCard({ service, locale = defaultLocale }: { service: Serv
         <Link href={`/${service.slug}`} className="inline-flex min-h-11 items-center rounded-full px-3 text-sm font-semibold text-olive-800 transition hover:bg-olive-50 hover:text-olive-600">
           {copy.serviceCard.details}
         </Link>
-        <Link
-          href={bookingHref}
-          className="inline-flex min-h-11 items-center rounded-full border border-olive-300 px-4 py-2 text-sm font-semibold text-olive-900 transition hover:border-olive-900 hover:bg-olive-900 hover:text-ivory"
+        <a
+          href="tel:6086283432"
+          className="inline-flex min-h-11 items-center gap-2 rounded-full border border-rose-300 px-4 py-2 text-sm font-semibold text-rose-700 transition hover:border-rose-600 hover:bg-rose-600 hover:text-white"
         >
-          {service.ctaLabel || copy.common.bookNow}
-        </Link>
+          <Phone className="size-4" aria-hidden="true" />
+          {service.ctaLabel || copy.common.callNow}
+        </a>
       </div>
     </article>
   )

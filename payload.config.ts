@@ -17,7 +17,7 @@ import { SiteSettings } from './src/globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
-const localDatabaseURL = 'postgresql://payload:payload@127.0.0.1:5432/oasis_spa'
+const localDatabaseURL = process.env.NODE_ENV !== 'production' ? 'postgresql://payload:payload@127.0.0.1:5432/seven_day_spa' : ''
 const isPostgresDatabaseURL = (value?: string) => {
   try {
     const url = new URL(value || '')
@@ -36,13 +36,14 @@ const databaseURL =
         : localDatabaseURL
 
 export default buildConfig({
-  secret: process.env.PAYLOAD_SECRET || 'dev-only-secret-change-me',
+  secret: process.env.PAYLOAD_SECRET || (process.env.NODE_ENV === 'production' ? (() => { throw new Error('PAYLOAD_SECRET is required in production') })() : 'dev-only-secret-change-me'),
   serverURL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
   sharp,
   admin: {
     user: Users.slug,
     components: {
-      actions: ['/components/AdminLanguageToggle'],
+
+      afterNavLinks: ['/components/AdminLanguageToggle', '/components/AdminLogoutButton'],
       beforeDashboard: ['/components/AdminDashboardOverview'],
       beforeLogin: ['/components/AdminLanguageToggle'],
       graphics: {

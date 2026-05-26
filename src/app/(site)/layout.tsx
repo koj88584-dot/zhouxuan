@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { DM_Sans, Fraunces } from 'next/font/google'
 import Script from 'next/script'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
@@ -10,18 +9,6 @@ import { buildMetadata, buildSpaJsonLd } from '@/lib/seo'
 import '@/app/globals.css'
 
 export const dynamic = 'force-dynamic'
-
-const display = Fraunces({
-  subsets: ['latin'],
-  weight: ['500', '600', '700'],
-  variable: '--font-display',
-})
-
-const body = DM_Sans({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-body',
-})
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getCurrentLocale()
@@ -43,17 +30,17 @@ export default async function SiteLayout({ children }: Readonly<{ children: Reac
     description: settings.siteDescription,
     telephone: settings.contact.phone,
     email: settings.contact.email,
-    addressLine1: settings.contact.addressLine1,
-    addressLine2: settings.contact.addressLine2,
+    contact: settings.contact,
   })
 
   return (
-    <html lang={locale === 'zh' ? 'zh-CN' : 'en'} className={`${display.variable} ${body.variable}`}>
+    <html lang={locale === 'zh' ? 'zh-CN' : 'en'}>
       <body className="antialiased">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:rounded-full focus:bg-olive-900 focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-ivory">Skip to main content</a>
         <Script id="spa-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <div className="relative min-h-screen pb-10">
           <SiteHeader settings={settings} locale={locale} />
-          <main className="mx-auto mt-6 max-w-[1180px] px-4 md:px-8">{children}</main>
+          <main id="main-content" className="mx-auto mt-6 max-w-[1180px] px-4 md:px-8">{children}</main>
           <SiteFooter settings={settings} locale={locale} />
         </div>
       </body>

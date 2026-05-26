@@ -1,34 +1,48 @@
 export const serviceImageBySlug: Record<string, string> = {
-  'body-massage': '/images/oasis/body.png',
-  'couples-massage': '/images/oasis/couples.png',
-  'foot-reflexology': '/images/oasis/foot.png',
-  'body-massage-and-foot-reflexology-combo': '/images/oasis/combo.png',
-  'aromatherapy-massage': '/images/oasis/aroma.png',
-  'chair-massage': '/images/oasis/chair.png',
-  'foot-reflexology-and-tuina-combo': '/images/oasis/tuina.png',
-  'cupping-therapy': '/images/oasis/cupping.jpg',
-  'essential-oils-massage': '/images/oasis/essential-oils.png',
+  'body-massage': '/images/spa/body.png',
+  'thai-massage': '/images/spa/aroma.png',
+  'four-hands-massage': '/images/spa/couples.png',
+}
+
+export const brandLogo = {
+  src: '/images/seven-day-spa/logo.png',
+  alt: '7 DAY SPA Massage & Wellness logo',
+}
+
+export const storefrontImage = {
+  src: '/images/seven-day-spa/storefront.jpg',
+  alt: '7 DAY SPA storefront on Odana Road in Madison, Wisconsin',
 }
 
 export const homeGallery = [
   {
-    src: '/images/oasis/gallery-1.jpg',
-    alt: 'Spa treatment room at Oasis Spa',
-    title: 'Treatment Rooms',
+    src: '/images/seven-day-spa/lobby-1.jpg',
+    alt: 'Reception area inside 7 DAY SPA',
+    title: 'Reception',
   },
   {
-    src: '/images/oasis/gallery-2.jpg',
-    alt: 'Massage and spa interior detail',
-    title: 'Quiet Details',
+    src: '/images/seven-day-spa/lobby-2.jpg',
+    alt: 'Waiting area and decor inside 7 DAY SPA',
+    title: 'Waiting Area',
   },
   {
-    src: '/images/oasis/gallery-3.jpg',
-    alt: 'Interior photo from Oasis Spa',
-    title: 'Arrival Atmosphere',
+    src: '/images/seven-day-spa/hallway.jpg',
+    alt: 'Hallway leading to treatment rooms at 7 DAY SPA',
+    title: 'Treatment Hallway',
+  },
+  {
+    src: '/images/seven-day-spa/room-1.jpg',
+    alt: 'Private massage room at 7 DAY SPA',
+    title: 'Treatment Room',
+  },
+  {
+    src: '/images/seven-day-spa/room-2.jpg',
+    alt: 'Massage table and floral decor in a 7 DAY SPA room',
+    title: 'Quiet Room',
+  },
+  {
+    src: '/images/seven-day-spa/room-3.jpg',
+    alt: 'Massage room interior at 7 DAY SPA',
+    title: 'Bodywork Space',
   },
 ]
-
-export const nailsImage = {
-  src: '/images/oasis/nails.jpg',
-  alt: 'Nail care service at Oasis Spa',
-}

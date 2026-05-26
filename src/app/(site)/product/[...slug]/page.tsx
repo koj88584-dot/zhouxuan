@@ -4,7 +4,7 @@ export default async function LegacyProductPage({ params }: { params: Promise<{ 
   const { slug } = await params
 
   if (slug[0] === 'card-courtesy-fee') {
-    permanentRedirect('/gift-cards')
+    permanentRedirect('/contact-us')
   }
 
   permanentRedirect('/services')

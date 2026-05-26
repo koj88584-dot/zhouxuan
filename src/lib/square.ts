@@ -1,7 +1,8 @@
-import { getPayloadClient } from '@/lib/payload'
+﻿import { getPayloadClient } from '@/lib/payload'
 import type { ServiceDoc, SquareSyncEntry, SquareSyncSummary } from '@/lib/types'
 
 const SQUARE_API_VERSION = '2026-01-22'
+const SQUARE_FETCH_TIMEOUT_MS = 10_000
 
 function extractPriceLabel(item: Record<string, any>) {
   const variations = item.item_variation_data
@@ -29,17 +30,17 @@ async function fetchSquareCatalogSummary(service: ServiceDoc): Promise<SquareSyn
   if (!process.env.SQUARE_ACCESS_TOKEN) {
     return {
       slug: service.slug,
-      active: service.binding.active,
+      active: service.binding?.active,
       live: false,
       priceLabel: service.priceLabel,
       reason: 'Missing SQUARE_ACCESS_TOKEN',
     }
   }
 
-  if (!service.binding.squareCategoryId && !service.binding.squareItemId) {
+  if (!service.binding?.squareCategoryId && !service.binding?.squareItemId) {
     return {
       slug: service.slug,
-      active: Boolean(service.binding.squareAppointmentUrl),
+      active: Boolean(service.binding?.squareAppointmentUrl),
       live: false,
       priceLabel: service.priceLabel,
       reason: 'No Square item or category binding configured',
@@ -47,42 +48,66 @@ async function fetchSquareCatalogSummary(service: ServiceDoc): Promise<SquareSyn
   }
 
   const body = {
-    category_ids: service.binding.squareCategoryId ? [service.binding.squareCategoryId] : undefined,
-    text_filter: service.binding.squareItemId ? undefined : service.title,
+    category_ids: service.binding?.squareCategoryId ? [service.binding?.squareCategoryId] : undefined,
+    text_filter: service.binding?.squareItemId ? undefined : service.title,
     enabled_location_ids: process.env.SQUARE_LOCATION_ID ? [process.env.SQUARE_LOCATION_ID] : undefined,
     archived_state: 'ARCHIVED_STATE_NOT_ARCHIVED',
     limit: 10,
   }
 
-  const response = await fetch('https://connect.squareup.com/v2/catalog/search-catalog-items', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.SQUARE_ACCESS_TOKEN}`,
-      'Content-Type': 'application/json',
-      'Square-Version': SQUARE_API_VERSION,
-    },
-    body: JSON.stringify(body),
-    cache: 'no-store',
-  })
+  const controller = new AbortController()
+  let timeout: ReturnType<typeof setTimeout> | undefined
 
-  if (!response.ok) {
+  try {
+    timeout = setTimeout(() => controller.abort(), SQUARE_FETCH_TIMEOUT_MS)
+
+    const response = await fetch('https://connect.squareup.com/v2/catalog/search-catalog-items', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.SQUARE_ACCESS_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Square-Version': SQUARE_API_VERSION,
+      },
+      body: JSON.stringify(body),
+      cache: 'no-store',
+      signal: controller.signal,
+    })
+
+    clearTimeout(timeout)
+
+    if (!response.ok) {
+      return {
+        slug: service.slug,
+        active: service.binding?.active,
+        live: false,
+        priceLabel: service.priceLabel,
+        reason: `Square returned ${response.status}`,
+      }
+    }
+
+    const data = (await response.json()) as { items?: Array<Record<string, any>> }
+    const matched = data.items?.[0]
+
     return {
       slug: service.slug,
-      active: service.binding.active,
+      active: Boolean(matched) && Boolean(service.binding?.squareAppointmentUrl),
+      live: true,
+      priceLabel: matched ? extractPriceLabel(matched) ?? service.priceLabel : service.priceLabel,
+    }
+  } catch (error) {
+    if (timeout) clearTimeout(timeout)
+
+    const reason = error instanceof DOMException && error.name === 'AbortError'
+      ? 'Square request timed out'
+      : `Square request failed: ${String(error)}`
+
+    return {
+      slug: service.slug,
+      active: service.binding?.active,
       live: false,
       priceLabel: service.priceLabel,
-      reason: `Square returned ${response.status}`,
+      reason,
     }
-  }
-
-  const data = (await response.json()) as { items?: Array<Record<string, any>> }
-  const matched = data.items?.[0]
-
-  return {
-    slug: service.slug,
-    active: Boolean(matched) && Boolean(service.binding.squareAppointmentUrl),
-    live: true,
-    priceLabel: matched ? extractPriceLabel(matched) ?? service.priceLabel : service.priceLabel,
   }
 }
 
@@ -108,18 +133,22 @@ export async function runSquareSync(): Promise<SquareSyncSummary> {
         const service = payloadServices.find((current) => current.slug === entry.slug)
         if (!service) return
 
-        await payload.update({
-          collection: 'services',
-          id: (service as unknown as { id: number | string }).id,
-          data: {
-            binding: {
-              ...(service as unknown as { binding: Record<string, unknown> }).binding,
-              active: entry.active,
+        try {
+          await payload.update({
+            collection: 'services',
+            id: (service as unknown as { id: number | string }).id,
+            data: {
+              binding: {
+                ...(service as unknown as { binding: Record<string, unknown> }).binding,
+                active: entry.active,
+              },
+              priceLabel: entry.priceLabel,
+              lastSyncedAt: new Date().toISOString(),
             },
-            priceLabel: entry.priceLabel,
-            lastSyncedAt: new Date().toISOString(),
-          },
-        })
+          })
+        } catch (error) {
+          console.error(`Failed to update service ${entry.slug} from Square sync:`, error)
+        }
       }),
     )
   }

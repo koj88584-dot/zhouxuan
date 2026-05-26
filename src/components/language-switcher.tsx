@@ -13,13 +13,18 @@ export function LanguageSwitcher({ locale, onSelect }: { locale: Locale; onSelec
   async function selectLocale(nextLocale: Locale) {
     if (isPending || nextLocale === locale) return
 
-    await fetch('/api/locale', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ locale: nextLocale }),
-    })
+    try {
+      await fetch('/api/locale', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ locale: nextLocale }),
+      })
+    } catch {
+      // Cookie may still be set if the response was received before the error
+    }
+
     onSelect?.()
     startTransition(() => {
       router.refresh()

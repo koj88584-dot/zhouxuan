@@ -5,8 +5,14 @@ import { getServices, getTechnicians } from '@/lib/content'
 import { getPayloadClient } from '@/lib/payload'
 import { saveSubmissionToBlob } from '@/lib/submission-store'
 import { bookingSchema } from '@/lib/validation'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 export async function POST(request: Request) {
+  const ip = request.headers.get('x-nf-client-connection-ip') || request.headers.get('x-forwarded-for') || 'unknown'
+  if (!checkRateLimit(`booking:${ip}`)) {
+    return NextResponse.json({ error: 'Too many requests. Please try again shortly.' }, { status: 429 })
+  }
+
   const json = await request.json().catch(() => null)
   const parsed = bookingSchema.safeParse(json)
 
@@ -20,10 +26,7 @@ export async function POST(request: Request) {
 
   const [services, technicians, payload] = await Promise.all([getServices(), getTechnicians(), getPayloadClient()])
   const service = services.find((entry) => entry.slug === parsed.data.serviceSlug)
-  const technician =
-    parsed.data.technicianSlug === 'any'
-      ? technicians.find((entry) => entry.slug === 'any-available')
-      : technicians.find((entry) => entry.slug === parsed.data.technicianSlug)
+  const technician = technicians.find((entry) => entry.slug === parsed.data.technicianSlug)
 
   if (!service) {
     return NextResponse.json({ errors: { serviceSlug: 'That service is no longer available.' } }, { status: 400 })

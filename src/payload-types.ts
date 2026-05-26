@@ -258,35 +258,67 @@ export interface Service {
   createdAt: string;
 }
 /**
+ * Manage technician profiles that appear on the booking page.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "technicians".
  */
 export interface Technician {
   id: number;
+  /**
+   * Full display name shown to guests.
+   */
   name: string;
+  /**
+   * Auto-generated URL identifier.
+   */
   slug: string;
+  /**
+   * Professional title, e.g. "Senior Massage Therapist".
+   */
   title: string;
+  /**
+   * A brief introduction paragraph about this technician.
+   */
   bio: string;
+  /**
+   * Leave empty if this technician can perform all services.
+   */
   serviceSlugs?:
     | {
         value: string;
         id?: string | null;
       }[]
     | null;
+  /**
+   * Highlight areas of expertise.
+   */
   specialties?:
     | {
         value: string;
         id?: string | null;
       }[]
     | null;
+  /**
+   * Languages spoken by this technician.
+   */
   languages?:
     | {
         value: string;
         id?: string | null;
       }[]
     | null;
+  /**
+   * Note shown to guests about availability.
+   */
   availabilityNote?: string | null;
+  /**
+   * Inactive technicians are hidden from booking.
+   */
   active?: boolean | null;
+  /**
+   * Lower numbers appear first.
+   */
   displayOrder?: number | null;
   updatedAt: string;
   createdAt: string;
@@ -315,16 +347,30 @@ export interface Booking {
   createdAt: string;
 }
 /**
+ * Guest inquiries submitted through the contact form.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "inquiries".
  */
 export interface Inquiry {
   id: number;
+  /**
+   * Guest's full name.
+   */
   name: string;
   email: string;
+  /**
+   * Optional contact number.
+   */
   phone?: string | null;
+  /**
+   * Which service this inquiry relates to (if specified).
+   */
   serviceSlug?: string | null;
   message: string;
+  /**
+   * Track your response progress.
+   */
   status?: ('new' | 'replied' | 'archived') | null;
   updatedAt: string;
   createdAt: string;

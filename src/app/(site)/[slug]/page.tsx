@@ -1,11 +1,12 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { Phone } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import { PageHero } from '@/components/page-hero'
 import { getServiceBySlug } from '@/lib/content'
 import { getUiCopy } from '@/lib/i18n'
 import { getCurrentLocale } from '@/lib/i18n-server'
-import { serviceImageBySlug } from '@/lib/site-media'
+import { serviceImageBySlug, storefrontImage } from '@/lib/site-media'
 import { buildMetadata } from '@/lib/seo'
 import { paragraphsFromContent } from '@/lib/utils'
 
@@ -22,6 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: `${service.title} | ${copy.serviceDetail.eyebrow}`,
     description: service.summary,
     path: `/${service.slug}`,
+    image: storefrontImage.src,
   })
 }
 
@@ -44,12 +46,13 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         summary={service.summary}
         actions={
           <>
-            <Link
-              href={`/booking?service=${encodeURIComponent(service.slug)}`}
-              className="rounded-full bg-olive-800 px-5 py-3 text-sm font-semibold text-ivory transition hover:bg-olive-900"
+            <a
+              href="tel:6086283432"
+              className="inline-flex items-center gap-2 rounded-full bg-rose-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-rose-700"
             >
-              {service.ctaLabel}
-            </Link>
+              <Phone className="size-4" aria-hidden="true" />
+              {service.ctaLabel || copy.common.callNow}
+            </a>
             <Link
               href="/services"
               className="rounded-full border border-olive-300 bg-white/70 px-5 py-3 text-sm font-semibold text-olive-900 transition hover:border-olive-800"
@@ -71,11 +74,11 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
           </article>
 
           <article className="rounded-[1.8rem] border border-white/85 bg-white/84 p-6 shadow-[0_18px_48px_rgba(23,35,29,0.08)]">
-            <p className="text-xs uppercase tracking-[0.3em] text-olive-600">{copy.serviceDetail.benefits}</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-rose-600">{copy.serviceDetail.benefits}</p>
             <ul className="mt-4 space-y-3 text-sm leading-7 text-olive-800">
-              {service.benefits.map((benefit) => (
+              {(service.benefits || []).map((benefit) => (
                 <li key={benefit} className="flex gap-3">
-                  <span className="mt-2 size-1.5 rounded-full bg-olive-700" />
+                  <span className="mt-2 size-1.5 rounded-full bg-rose-600" />
                   <span>{benefit}</span>
                 </li>
               ))}
@@ -92,11 +95,11 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
             </article>
           ) : null}
 
-          <article className="rounded-[1.8rem] bg-[linear-gradient(165deg,#274b3a_0%,#1c3529_100%)] p-6 text-ivory shadow-[0_18px_48px_rgba(18,27,22,0.22)]">
-            <p className="text-xs uppercase tracking-[0.3em] text-stone-400">{copy.serviceDetail.rhythm}</p>
+          <article className="rounded-[1.8rem] bg-[linear-gradient(165deg,#274b3a_0%,#1c3529_100%)] p-6 text-white shadow-[0_18px_48px_rgba(18,27,22,0.22)]">
+            <p className="text-xs uppercase tracking-[0.3em] text-stone-300">{copy.serviceDetail.rhythm}</p>
             <p className="mt-4 text-3xl">{service.duration}</p>
             <div className="mt-6 space-y-3 text-sm text-stone-300">
-              {service.ritualSteps.map((step) => (
+              {(service.ritualSteps || []).map((step) => (
                 <div key={step} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
                   {step}
                 </div>

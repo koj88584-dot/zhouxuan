@@ -13,6 +13,10 @@ export const Inquiries: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'email', 'serviceSlug', 'status', 'createdAt'],
     group: adminGroups.spaOperations,
+    description: {
+      en: 'Guest inquiries submitted through the contact form.',
+      zh: '通过联系表单提交的客人咨询。',
+    },
   },
   fields: [
     {
@@ -20,6 +24,12 @@ export const Inquiries: CollectionConfig = {
       type: 'text',
       label: fieldLabels.name,
       required: true,
+      admin: {
+        description: {
+          en: 'Guest\'s full name.',
+          zh: '客人的全名。',
+        },
+      },
     },
     {
       name: 'email',
@@ -31,11 +41,23 @@ export const Inquiries: CollectionConfig = {
       name: 'phone',
       type: 'text',
       label: fieldLabels.phone,
+      admin: {
+        description: {
+          en: 'Optional contact number.',
+          zh: '可选的联系电话。',
+        },
+      },
     },
     {
       name: 'serviceSlug',
       type: 'text',
       label: fieldLabels.serviceSlug,
+      admin: {
+        description: {
+          en: 'Which service this inquiry relates to (if specified).',
+          zh: '此咨询相关的服务项目（如果有指定）。',
+        },
+      },
     },
     {
       name: 'message',
@@ -51,6 +73,10 @@ export const Inquiries: CollectionConfig = {
       options: inquiryStatusOptions,
       admin: {
         position: 'sidebar',
+        description: {
+          en: 'Track your response progress.',
+          zh: '跟踪回复进度。',
+        },
       },
     },
   ],

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import { isPayloadConfigured } from '@/lib/payload-status'
 
 type AdminPageProps = {
@@ -35,7 +35,7 @@ export const generateMetadata = async ({
 }: AdminPageProps): Promise<Metadata> => {
   if (!isPayloadConfigured()) {
     return {
-      title: 'Admin setup required | Oasis Spa',
+      title: 'Admin setup required | 7 DAY SPA',
       description: 'Connect a production database to enable the admin panel.',
     }
   }
@@ -56,7 +56,7 @@ export const generateMetadata = async ({
 
     console.error('Failed to generate Payload admin metadata:', error)
     return {
-      title: 'Admin unavailable | Oasis Spa',
+      title: 'Admin unavailable | 7 DAY SPA',
       description: 'The admin panel could not load its database-backed configuration.',
     }
   }

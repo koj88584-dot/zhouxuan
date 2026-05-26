@@ -1,8 +1,8 @@
-import { getPayload } from 'payload'
+import { getPayload, type Payload } from 'payload'
 import { isPayloadConfigured } from '@/lib/payload-status'
 
 declare global {
-  var __payloadClientPromise__: ReturnType<typeof getPayload> | undefined
+  var __payloadClient__: Payload | null | undefined
 }
 
 export async function getPayloadClient() {
@@ -10,17 +10,24 @@ export async function getPayloadClient() {
     return null
   }
 
+  // Return cached successful client
+  if (globalThis.__payloadClient__) {
+    return globalThis.__payloadClient__
+  }
+
+  // Already determined it's unavailable this process lifetime
+  if (globalThis.__payloadClient__ === null) {
+    return null
+  }
+
   try {
     const { default: config } = await import('@/payload-config')
-
-    globalThis.__payloadClientPromise__ ??= getPayload({
-      config,
-    })
-
-    return await globalThis.__payloadClientPromise__
+    const client = await getPayload({ config })
+    globalThis.__payloadClient__ = client
+    return client
   } catch (error) {
-    globalThis.__payloadClientPromise__ = undefined
-    console.error('Payload is unavailable; falling back to public seed content.', error)
+    globalThis.__payloadClient__ = null
+    console.warn('Payload is unavailable; falling back to public seed content.', error)
     return null
   }
 }

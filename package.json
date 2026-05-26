@@ -1,5 +1,5 @@
 {
-  "name": "oasis-spa-rebuild",
+  "name": "seven-day-spa",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -50,6 +50,7 @@
     "eslint-config-next": "^16.2.0",
     "globals": "^16.4.0",
     "jsdom": "^27.0.0",
+    "netlify-cli": "^26.0.2",
     "tailwindcss": "^4.1.13",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",

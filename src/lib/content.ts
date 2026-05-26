@@ -1,3 +1,4 @@
+﻿import { cache } from 'react'
 import {
   pagesSeed,
   redirectsSeed,
@@ -16,17 +17,7 @@ import {
 import { getPayloadClient } from '@/lib/payload'
 import type { PageDoc, RedirectEntry, ServiceDoc, SiteSettings, TechnicianDoc } from '@/lib/types'
 
-const preferredServiceOrder = [
-  'body-massage',
-  'couples-massage',
-  'foot-reflexology',
-  'aromatherapy-massage',
-  'chair-massage',
-  'body-massage-and-foot-reflexology-combo',
-  'foot-reflexology-and-tuina-combo',
-  'cupping-therapy',
-  'essential-oils-massage',
-] as const
+const preferredServiceOrder = ['body-massage', 'thai-massage', 'four-hands-massage'] as const
 
 const serviceOrderMap = new Map<string, number>(preferredServiceOrder.map((slug, index) => [slug, index]))
 
@@ -56,6 +47,10 @@ function mergeNavLinks(seed: SiteSettings['primaryNav'], docs: unknown) {
   }
 
   return Array.from(merged.values())
+}
+
+function isPublicNavLink(item: { href: string }) {
+  return item.href !== '/booking' && item.href !== '/gift-cards' && item.href !== '/nails'
 }
 
 function normalizeContactInfo(seed: SiteSettings['contact'], doc: unknown): SiteSettings['contact'] {
@@ -89,7 +84,7 @@ function normalizePage(doc: Record<string, unknown>): PageDoc {
     bodyContent: String(doc.bodyContent || ''),
     highlights: Array.isArray(doc.highlights)
       ? doc.highlights.map((entry) =>
-          typeof entry === 'string' ? entry : String((entry as Record<string, unknown>).value || ''),
+          entry == null ? '' : typeof entry === 'string' ? entry : String((entry as Record<string, unknown>).value || ''),
         )
       : undefined,
     ctaLabel: doc.ctaLabel ? String(doc.ctaLabel) : undefined,
@@ -107,18 +102,18 @@ function normalizeService(doc: Record<string, unknown>): ServiceDoc {
     duration: String(doc.duration || ''),
     benefits: Array.isArray(doc.benefits)
       ? doc.benefits.map((entry) =>
-          typeof entry === 'string' ? entry : String((entry as Record<string, unknown>).value || ''),
+          entry == null ? '' : typeof entry === 'string' ? entry : String((entry as Record<string, unknown>).value || ''),
         )
       : [],
     ritualSteps: Array.isArray(doc.ritualSteps)
       ? doc.ritualSteps.map((entry) =>
-          typeof entry === 'string' ? entry : String((entry as Record<string, unknown>).value || ''),
+          entry == null ? '' : typeof entry === 'string' ? entry : String((entry as Record<string, unknown>).value || ''),
         )
       : [],
     icon: String(doc.icon || 'lotus') as ServiceDoc['icon'],
     ctaLabel: String(doc.ctaLabel || 'Book service'),
     ctaType: String(doc.ctaType || 'booking') as ServiceDoc['ctaType'],
-    displayPriceMode: String(doc.displayPriceMode || 'hidden') as ServiceDoc['displayPriceMode'],
+    displayPriceMode: String(doc.displayPriceMode || 'square') as ServiceDoc['displayPriceMode'],
     priceLabel: doc.priceLabel ? String(doc.priceLabel) : undefined,
     featured: Boolean(doc.featured),
     binding: {
@@ -130,12 +125,11 @@ function normalizeService(doc: Record<string, unknown>): ServiceDoc {
     },
   }
 }
-
 function normalizeArrayField(value: unknown): string[] {
   if (!Array.isArray(value)) return []
 
   return value
-    .map((entry) => (typeof entry === 'string' ? entry : String((entry as Record<string, unknown>).value || '')))
+    .map((entry) => (entry == null ? '' : typeof entry === 'string' ? entry : String((entry as Record<string, unknown>).value || '')))
     .filter(Boolean)
 }
 
@@ -154,7 +148,7 @@ function normalizeTechnician(doc: Record<string, unknown>): TechnicianDoc {
   }
 }
 
-export async function getSiteSettings(locale: Locale = defaultLocale): Promise<SiteSettings> {
+const _getSiteSettings = cache(async (locale: Locale = defaultLocale): Promise<SiteSettings> => {
   const payload = await getPayloadClient()
 
   if (!payload) return localizeSiteSettings(siteSettingsSeed, locale)
@@ -168,19 +162,21 @@ export async function getSiteSettings(locale: Locale = defaultLocale): Promise<S
     return localizeSiteSettings({
       ...siteSettingsSeed,
       ...globalDoc,
-      bookingUrl: '/booking',
+      bookingUrl: typeof globalDoc.bookingUrl === 'string' ? globalDoc.bookingUrl : '/booking',
       contact: normalizeContactInfo(siteSettingsSeed.contact, globalDoc.contact),
       hours: Array.isArray(globalDoc.hours) && globalDoc.hours.length ? globalDoc.hours : siteSettingsSeed.hours,
       socials:
         Array.isArray(globalDoc.socials) && globalDoc.socials.length ? globalDoc.socials : siteSettingsSeed.socials,
       primaryNav:
-        Array.isArray(globalDoc.primaryNav) && globalDoc.primaryNav.length
+        (Array.isArray(globalDoc.primaryNav) && globalDoc.primaryNav.length
           ? mergeNavLinks(siteSettingsSeed.primaryNav, globalDoc.primaryNav)
-          : siteSettingsSeed.primaryNav,
+          : siteSettingsSeed.primaryNav
+        ).filter(isPublicNavLink),
       footerNav:
-        Array.isArray(globalDoc.footerNav) && globalDoc.footerNav.length
+        (Array.isArray(globalDoc.footerNav) && globalDoc.footerNav.length
           ? mergeNavLinks(siteSettingsSeed.footerNav, globalDoc.footerNav)
-          : siteSettingsSeed.footerNav,
+          : siteSettingsSeed.footerNav
+        ).filter(isPublicNavLink),
       heroFeatures:
         Array.isArray(globalDoc.heroFeatures) && globalDoc.heroFeatures.length
           ? globalDoc.heroFeatures
@@ -188,11 +184,20 @@ export async function getSiteSettings(locale: Locale = defaultLocale): Promise<S
       stats: Array.isArray(globalDoc.stats) && globalDoc.stats.length ? globalDoc.stats : siteSettingsSeed.stats,
     }, locale)
   } catch {
-    return localizeSiteSettings(siteSettingsSeed, locale)
+    return localizeSiteSettings(
+      {
+        ...siteSettingsSeed,
+        primaryNav: siteSettingsSeed.primaryNav.filter(isPublicNavLink),
+        footerNav: siteSettingsSeed.footerNav.filter(isPublicNavLink),
+      },
+      locale,
+    )
   }
-}
+})
 
-export async function getPages(locale: Locale = defaultLocale): Promise<PageDoc[]> {
+export const getSiteSettings = _getSiteSettings
+
+const _getPages = cache(async (locale: Locale = defaultLocale): Promise<PageDoc[]> => {
   const payload = await getPayloadClient()
 
   if (!payload) return pagesSeed.map((page) => localizePage(page, locale))
@@ -212,14 +217,18 @@ export async function getPages(locale: Locale = defaultLocale): Promise<PageDoc[
   } catch {
     return pagesSeed.map((page) => localizePage(page, locale))
   }
-}
+})
 
-export async function getPageBySlug(slug: string, locale: Locale = defaultLocale) {
-  const pages = await getPages(locale)
+export const getPages = _getPages
+
+const _getPageBySlug = cache(async (slug: string, locale: Locale = defaultLocale) => {
+  const pages = await _getPages(locale)
   return pages.find((page) => page.slug === slug)
-}
+})
 
-export async function getServices(locale: Locale = defaultLocale): Promise<ServiceDoc[]> {
+export const getPageBySlug = _getPageBySlug
+
+const _getServices = cache(async (locale: Locale = defaultLocale): Promise<ServiceDoc[]> => {
   const payload = await getPayloadClient()
 
   if (!payload) return sortServices(servicesSeed).map((service) => localizeService(service, locale))
@@ -231,6 +240,11 @@ export async function getServices(locale: Locale = defaultLocale): Promise<Servi
       limit: 100,
       pagination: false,
       sort: 'title',
+      where: {
+        'binding.active': {
+          equals: true,
+        },
+      },
     })
 
     return sortServices(
@@ -242,14 +256,18 @@ export async function getServices(locale: Locale = defaultLocale): Promise<Servi
   } catch {
     return sortServices(servicesSeed).map((service) => localizeService(service, locale))
   }
-}
+})
 
-export async function getServiceBySlug(slug: string, locale: Locale = defaultLocale) {
-  const services = await getServices(locale)
+export const getServices = _getServices
+
+const _getServiceBySlug = cache(async (slug: string, locale: Locale = defaultLocale) => {
+  const services = await _getServices(locale)
   return services.find((service) => service.slug === slug)
-}
+})
 
-export async function getTechnicians(locale: Locale = defaultLocale): Promise<TechnicianDoc[]> {
+export const getServiceBySlug = _getServiceBySlug
+
+const _getTechnicians = cache(async (locale: Locale = defaultLocale): Promise<TechnicianDoc[]> => {
   const payload = await getPayloadClient()
 
   if (!payload) return techniciansSeed.map((technician) => localizeTechnician(technician, locale))
@@ -277,7 +295,9 @@ export async function getTechnicians(locale: Locale = defaultLocale): Promise<Te
   } catch {
     return techniciansSeed.map((technician) => localizeTechnician(technician, locale))
   }
-}
+})
+
+export const getTechnicians = _getTechnicians
 
 export async function getRedirects(): Promise<RedirectEntry[]> {
   const payload = await getPayloadClient()

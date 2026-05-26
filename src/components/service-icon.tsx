@@ -1,4 +1,4 @@
-import {
+﻿import {
   Flower2,
   Gem,
   Hand,
@@ -21,6 +21,6 @@ const icons = {
 } as const
 
 export function ServiceIcon({ name }: { name: ServiceIconName }) {
-  const Icon = icons[name]
+  const Icon = icons[name] || Flower2
   return <Icon className="size-5" strokeWidth={1.75} />
 }

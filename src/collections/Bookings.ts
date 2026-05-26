@@ -50,7 +50,7 @@ export const Bookings: CollectionConfig = {
           name: 'technicianSlug',
           type: 'text',
           label: fieldLabels.technicianSlug,
-          defaultValue: 'any',
+          defaultValue: 'any-available',
         },
         {
           name: 'technicianName',

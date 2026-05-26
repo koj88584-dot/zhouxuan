@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation'
 import { PageHero } from '@/components/page-hero'
 import { ServiceCard } from '@/components/service-card'
 import { getPageBySlug, getServices } from '@/lib/content'
@@ -23,11 +24,13 @@ export default async function ServicesPage() {
   const locale = await getCurrentLocale()
   const copy = getUiCopy(locale)
   const [page, services] = await Promise.all([getPageBySlug('services', locale), getServices(locale)])
+  if (!page) notFound()
+
   const mostBooked = copy.services.mostBookedItems
 
   return (
     <div className="space-y-8 pb-10">
-      <PageHero eyebrow={page?.eyebrow || 'Services'} title={page?.title || 'Services'} summary={page?.summary || ''} />
+      <PageHero eyebrow={page.eyebrow} title={page.title} summary={page.summary} />
 
       <section className="rounded-[1.6rem] border border-white/85 bg-white/82 p-5 shadow-[0_14px_36px_rgba(23,35,29,0.06)]">
         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-olive-600">{copy.services.mostBooked}</p>
@@ -40,11 +43,17 @@ export default async function ServicesPage() {
         </div>
       </section>
 
-      <div className="grid gap-5 lg:grid-cols-3">
-        {services.map((service) => (
-          <ServiceCard key={service.slug} service={service} locale={locale} />
-        ))}
-      </div>
+      {services.length > 0 ? (
+        <div className="grid gap-5 lg:grid-cols-3">
+          {services.map((service) => (
+            <ServiceCard key={service.slug} service={service} locale={locale} />
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-[1.8rem] border border-white/85 bg-white/88 p-8 text-center shadow-[0_18px_48px_rgba(23,35,29,0.08)]">
+          <p className="text-olive-700">{copy.services.emptyFallback}</p>
+        </div>
+      )}
     </div>
   )
 }

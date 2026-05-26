@@ -17,7 +17,7 @@ export function PageHero({
   return (
     <section
       className={cn(
-        'relative overflow-hidden rounded-[2.25rem] border border-white/80 bg-[radial-gradient(circle_at_top_right,_rgba(39,75,58,0.14),_transparent_28%),radial-gradient(circle_at_left,_rgba(255,255,255,0.88),_transparent_45%),linear-gradient(180deg,#fbf8f4_0%,#f3f0ea_100%)] px-6 py-12 text-olive-900 shadow-[0_24px_70px_rgba(22,33,25,0.08)] md:px-10 md:py-18',
+        'relative overflow-hidden rounded-[2.25rem] border border-white/80 bg-[radial-gradient(circle_at_top_right,_rgba(39,75,58,0.14),_transparent_28%),radial-gradient(circle_at_left,_rgba(255,255,255,0.88),_transparent_45%),linear-gradient(180deg,#fbf8f4_0%,#f3f0ea_100%)] px-6 py-12 text-olive-900 shadow-[0_24px_70px_rgba(22,33,25,0.08)] md:px-10 md:py-20',
         className,
       )}
     >

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useMemo, useState, useTransition } from 'react'
 import { useSearchParams } from 'next/navigation'
@@ -9,7 +9,7 @@ import { defaultLocale, getUiCopy, type Locale } from '@/lib/i18n'
 import type { ServiceDoc, TechnicianDoc } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
-const timeSlots = ['10:00 AM', '11:30 AM', '1:00 PM', '2:30 PM', '4:00 PM', '5:30 PM', '7:00 PM']
+const timeSlots = ['9:00 AM', '10:30 AM', '12:00 PM', '1:30 PM', '3:00 PM', '4:30 PM', '6:00 PM', '7:30 PM', '9:00 PM']
 
 export function BookingForm({
   services,
@@ -28,9 +28,9 @@ export function BookingForm({
     : services[0]?.slug || ''
 
   const [serviceSlug, setServiceSlug] = useState(initialService)
-  const [technicianSlug, setTechnicianSlug] = useState('any')
+  const [technicianSlug, setTechnicianSlug] = useState('any-available')
   const [preferredDate, setPreferredDate] = useState(getSpaTodayIso())
-  const [preferredTime, setPreferredTime] = useState(timeSlots[2])
+  const [preferredTime, setPreferredTime] = useState(timeSlots[3])
   const [durationPreference, setDurationPreference] = useState('Best fit')
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
@@ -51,8 +51,8 @@ export function BookingForm({
   const durationOptions = useMemo(() => {
     const durations = selectedService?.duration
       .split('/')
-      .map((duration) => duration.trim())
-      .filter(Boolean)
+      .map((d) => d.replace(/min/i, '').trim() + ' min')
+      .filter((d) => d.length > 4)
 
     return ['Best fit', ...(durations || [])]
   }, [selectedService?.duration])
@@ -131,7 +131,7 @@ export function BookingForm({
                 checked={service.slug === serviceSlug}
                 onChange={() => {
                   setServiceSlug(service.slug)
-                  setTechnicianSlug('any')
+                  setTechnicianSlug('any-available')
                   setDurationPreference('Best fit')
                 }}
                 className="sr-only"
@@ -161,7 +161,7 @@ export function BookingForm({
                 key={technician.slug}
                 className={cn(
                   'cursor-pointer rounded-[1.2rem] border p-4 transition',
-                  (technician.slug === 'any-available' ? 'any' : technician.slug) === technicianSlug
+                  technician.slug === technicianSlug
                     ? 'border-olive-700 bg-olive-900 text-ivory'
                     : 'border-olive-100 bg-olive-50/70 text-olive-900 hover:border-olive-300',
                 )}
@@ -169,9 +169,9 @@ export function BookingForm({
                 <input
                   type="radio"
                   name="technicianSlug"
-                  value={technician.slug === 'any-available' ? 'any' : technician.slug}
-                  checked={(technician.slug === 'any-available' ? 'any' : technician.slug) === technicianSlug}
-                  onChange={() => setTechnicianSlug(technician.slug === 'any-available' ? 'any' : technician.slug)}
+                  value={technician.slug}
+                  checked={technician.slug === technicianSlug}
+                  onChange={() => setTechnicianSlug(technician.slug)}
                   className="sr-only"
                 />
                 <span className="flex gap-3">

@@ -3,8 +3,14 @@ import { sendInquiryNotification } from '@/lib/mailer'
 import { getPayloadClient } from '@/lib/payload'
 import { saveSubmissionToBlob } from '@/lib/submission-store'
 import { inquirySchema } from '@/lib/validation'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 export async function POST(request: Request) {
+  const ip = request.headers.get('x-nf-client-connection-ip') || request.headers.get('x-forwarded-for') || 'unknown'
+  if (!checkRateLimit(`inquiry:${ip}`)) {
+    return NextResponse.json({ error: 'Too many requests. Please try again shortly.' }, { status: 429 })
+  }
+
   const json = await request.json().catch(() => null)
   const parsed = inquirySchema.safeParse(json)
 

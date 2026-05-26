@@ -1,16 +1,16 @@
 import { expect, test } from '@playwright/test'
 
-test.describe('Oasis Spa marketing site', () => {
+test.describe('7 DAY SPA marketing site', () => {
   test('renders the home page hero and featured services', async ({ page }) => {
     await page.goto('/')
     await expect(page.getByRole('heading', { name: /relax, rejuvenate, refresh/i })).toBeVisible()
     await expect(page.getByRole('link', { name: /view services/i })).toBeVisible()
-    await expect(page.getByRole('link', { name: /^book$/i })).toBeVisible()
+    await expect(page.getByRole('link', { name: /book appointment/i }).first()).toBeVisible()
   })
 
   test('renders the services page and one service detail page', async ({ page }) => {
     await page.goto('/services')
-    await expect(page.getByRole('heading', { name: /massage & reflexology menu/i })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /massage menu/i })).toBeVisible()
     await expect(page.getByRole('link', { name: /book now/i }).first()).toHaveAttribute('href', /\/booking\?service=/)
     await page.goto('/body-massage')
     await expect(page.getByRole('heading', { name: /body massage/i })).toBeVisible()

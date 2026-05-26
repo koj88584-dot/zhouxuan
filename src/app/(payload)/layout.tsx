@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import type { ServerFunctionClient } from 'payload'
 import '@payloadcms/next/css'
 import React from 'react'
@@ -6,7 +6,7 @@ import '@/app/(payload)/custom.scss'
 import { isPayloadConfigured } from '@/lib/payload-status'
 
 export const metadata: Metadata = {
-  title: 'Payload Admin | Oasis Spa',
+  title: 'Payload Admin | 7 DAY SPA',
   description: 'Editorial spa content administration',
 }
 

@@ -1,6 +1,18 @@
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getUiCopy } from '@/lib/i18n'
 import { getCurrentLocale } from '@/lib/i18n-server'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getCurrentLocale()
+  const copy = getUiCopy(locale)
+
+  return {
+    title: `${copy.notFound.title} | 7 DAY SPA`,
+    description: copy.notFound.summary,
+    robots: { index: false, follow: false },
+  }
+}
 
 export default async function NotFound() {
   const locale = await getCurrentLocale()
