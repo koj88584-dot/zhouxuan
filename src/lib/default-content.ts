@@ -110,14 +110,14 @@ export const servicesSeed: ServiceDoc[] = [
     summary: 'Deep Tissue and Swedish style body massage with flexible session lengths.',
     bodyContent:
       'Body Massage is the studio’s most flexible service, suitable for guests who want a lighter Swedish-style session or a firmer Deep Tissue approach. It works well for general tension, back and shoulder tightness, and regular maintenance.',
-    duration: '30 / 60 / 90 min',
+    duration: '30 / 45 / 60 / 90 min',
     benefits: ['Deep Tissue or Swedish style pressure', 'Good for general tension relief', 'Straightforward pricing', 'Suitable for repeat appointments'],
     ritualSteps: ['Brief consultation', 'Targeted bodywork based on pressure preference', 'Full session focused on relaxation and tension relief', 'Simple finish and recovery'],
     icon: 'hand',
     ctaLabel: 'Call to schedule',
     ctaType: 'internal',
     displayPriceMode: 'custom',
-    priceLabel: '30 min $50 | 60 min $70 | 90 min $110',
+    priceLabel: '30 min $50 | 45 min $60 | 60 min $70 | 90 min $110',
     featured: true,
     binding: {
       squareAppointmentUrl: hiddenBookingUrl,
