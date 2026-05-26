@@ -7,7 +7,7 @@ export const siteSettingsSeed: SiteSettings = {
   siteName: '7 DAY SPA',
   siteTagline: 'Massage & Wellness',
   siteDescription:
-    "7 DAY SPA is a neighborhood massage studio on Odana Road in Madison offering Body Massage, Thai Massage, and Four Hands Massage in a calm, welcoming setting.",
+    "7 DAY SPA is a neighborhood massage studio in Madison's Lakewood Plaza Shopping Center offering Body Massage, Thai Massage, and Four Hands Massage in a calm, welcoming setting.",
   bookingUrl: hiddenBookingUrl,
   giftCardUrl: hiddenGiftCardUrl,
   primaryNav: [
@@ -23,11 +23,11 @@ export const siteSettingsSeed: SiteSettings = {
     { label: 'Contact Us', href: '/contact-us' },
   ],
   contact: {
-    addressLine1: '6733 Odana Rd',
-    addressLine2: 'Madison, WI 53719',
+    addressLine1: '605a N Sherman Ave',
+    addressLine2: 'Madison, WI 53704',
     phone: '608-628-3432',
     email: '',
-    mapQuery: '6733 Odana Rd Madison WI 53719',
+    mapQuery: '605a N Sherman Ave Madison WI 53704',
   },
   hours: [
     { day: 'Monday', hours: '9:00 AM - 9:30 PM' },
@@ -42,7 +42,7 @@ export const siteSettingsSeed: SiteSettings = {
   heroFeatures: [
     {
       title: 'Local and welcoming',
-      copy: 'A simple massage studio on Madison’s west side with a warm reception area and quiet treatment rooms.',
+      copy: 'A simple massage studio on Madison’s north side with a warm reception area and quiet treatment rooms.',
     },
     {
       title: 'Focused massage menu',
@@ -68,8 +68,8 @@ export const pagesSeed: PageDoc[] = [
     summary:
       '7 DAY SPA is a local Madison massage studio focused on straightforward bodywork, a quiet environment, and flexible service lengths.',
     bodyContent:
-      '7 DAY SPA serves guests looking for dependable massage care without a complicated booking experience. The studio offers Body Massage, Thai Massage, and Four Hands Massage in a relaxed, low-pressure setting on Odana Road.\n\nInside, the space is simple and welcoming: a small reception area, a quiet hallway, and private treatment rooms prepared for individual appointments. The experience is centered on comfort, affordability, and practical bodywork rather than a luxury hotel style presentation.\n\nThis site refresh keeps that same spirit. It presents the real studio, the real service menu, and the real pricing in a cleaner and more trustworthy format so guests can quickly understand what is offered before calling or visiting.',
-    highlights: ['Odana Road location in Madison', 'Body Massage, Thai Massage, and Four Hands Massage', 'Open daily from 9:00 AM to 9:30 PM'],
+      '7 DAY SPA serves guests looking for dependable massage care without a complicated booking experience. The studio offers Body Massage, Thai Massage, and Four Hands Massage in a relaxed, low-pressure setting in Lakewood Plaza Shopping Center on N Sherman Ave.\n\nInside, the space is simple and welcoming: a small reception area, a quiet hallway, and private treatment rooms prepared for individual appointments. The experience is centered on comfort, affordability, and practical bodywork rather than a luxury hotel style presentation.\n\nThis site refresh keeps that same spirit. It presents the real studio, the real service menu, and the real pricing in a cleaner and more trustworthy format so guests can quickly understand what is offered before calling or visiting.',
+    highlights: ['Lakewood Plaza location in Madison', 'Body Massage, Thai Massage, and Four Hands Massage', 'Open daily from 9:00 AM to 9:30 PM'],
     ctaLabel: 'View services',
     ctaHref: '/services',
   },

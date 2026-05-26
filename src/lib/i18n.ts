@@ -63,7 +63,7 @@ const zhPages: Record<string, Partial<PageDoc>> = {
   aboutus: {
     title: '一家简单安静的社区按摩门店',
     eyebrow: '关于 7 DAY SPA',
-    summary: '7 DAY SPA 位于 Madison Odana Road，提供实用、清晰、容易理解的按摩服务。',
+    summary: '7 DAY SPA 位于 Madison Lakewood Plaza Shopping Center (N Sherman Ave)，提供实用、清晰、容易理解的按摩服务。',
   },
   services: {
     title: '按摩服务与价格',
@@ -127,7 +127,7 @@ export const uiCopy = {
     home: {
       eyebrow: '7 DAY SPA | Madison, WI',
       title: 'Massage care in a calm local studio',
-      summary: 'Body Massage, Thai Massage, and Four Hands Massage on Odana Road in Madison.',
+      summary: 'Body Massage, Thai Massage, and Four Hands Massage at Lakewood Plaza on N Sherman Ave in Madison.',
       viewServices: 'View Services',
       heroPills: ['Body Massage', 'Thai Massage', 'Four Hands Massage'],
       visitLabel: 'Visit',
@@ -257,7 +257,7 @@ export const uiCopy = {
     home: {
       eyebrow: '7 DAY SPA | Madison, WI',
       title: '一家安静本地的按摩门店',
-      summary: '位于 Odana Road，提供 Body Massage、Thai Massage 和 Four Hands Massage。',
+      summary: '位于 Lakewood Plaza (N Sherman Ave)，提供 Body Massage、Thai Massage 和 Four Hands Massage。',
       viewServices: '查看服务',
       heroPills: ['Body Massage', 'Thai Massage', 'Four Hands Massage'],
       visitLabel: '地址',
@@ -377,7 +377,7 @@ export function localizeSiteSettings(settings: SiteSettings, locale: Locale): Si
   return {
     ...settings,
     siteTagline: '按摩与养生',
-    siteDescription: '7 DAY SPA 是 Madison Odana Road 上一家安静、简单、实用的按摩门店。',
+    siteDescription: '7 DAY SPA 是 Madison N Sherman Ave 上一家安静、简单、实用的按摩门店。',
     primaryNav: settings.primaryNav.map((item) => ({ ...item, label: zhNavLabels[item.href] || item.label })),
     footerNav: settings.footerNav.map((item) => ({ ...item, label: zhNavLabels[item.href] || item.label })),
     hours: settings.hours.map((item) => ({

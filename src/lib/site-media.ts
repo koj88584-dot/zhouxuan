@@ -11,7 +11,7 @@ export const brandLogo = {
 
 export const storefrontImage = {
   src: '/images/seven-day-spa/storefront.jpg',
-  alt: '7 DAY SPA storefront on Odana Road in Madison, Wisconsin',
+  alt: '7 DAY SPA storefront in Lakewood Plaza Shopping Center in Madison, Wisconsin',
 }
 
 export const homeGallery = [

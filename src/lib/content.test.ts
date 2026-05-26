@@ -1,4 +1,4 @@
-﻿import { getPageBySlug, getServiceBySlug, getServices, getSiteSettings, getTechnicians } from '@/lib/content'
+import { getPageBySlug, getServiceBySlug, getServices, getSiteSettings, getTechnicians } from '@/lib/content'
 
 describe('content fallback layer', () => {
   it('returns site settings without a configured database', async () => {
@@ -6,7 +6,7 @@ describe('content fallback layer', () => {
     expect(settings.siteName).toBe('7 DAY SPA')
     expect(settings.primaryNav).toContainEqual({ label: 'Services', href: '/services' })
     expect(settings.primaryNav.some((item) => item.href === '/booking')).toBe(false)
-    expect(settings.contact.addressLine1).toContain('Odana')
+    expect(settings.contact.addressLine1).toContain('Sherman')
   })
 
   it('returns the services collection with 3 core massage styles', async () => {
