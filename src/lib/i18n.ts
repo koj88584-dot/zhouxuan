@@ -34,7 +34,7 @@ const zhDayLabels: Record<string, string> = {
 }
 
 const zhHourLabels: Record<string, string> = {
-  '9:00 AM - 10:00 PM': '上午 9:00 - 晚上 10:00',
+  '9:00 AM - 9:30 PM': '上午 9:00 - 晚上 9:30',
   'By appointment': '请先预约',
 }
 
@@ -55,7 +55,7 @@ const zhSiteHeroFeatures: SiteSettings['heroFeatures'] = [
 
 const zhStats: SiteSettings['stats'] = [
   { label: '按摩服务', value: '03' },
-  { label: '营业时间', value: '9AM-10PM' },
+  { label: '营业时间', value: '9AM-9:30PM' },
   { label: '电话', value: '608-628-3432' },
 ]
 

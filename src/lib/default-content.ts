@@ -30,13 +30,13 @@ export const siteSettingsSeed: SiteSettings = {
     mapQuery: '6733 Odana Rd Madison WI 53719',
   },
   hours: [
-    { day: 'Monday', hours: '9:00 AM - 10:00 PM' },
-    { day: 'Tuesday', hours: '9:00 AM - 10:00 PM' },
-    { day: 'Wednesday', hours: '9:00 AM - 10:00 PM' },
-    { day: 'Thursday', hours: '9:00 AM - 10:00 PM' },
-    { day: 'Friday', hours: '9:00 AM - 10:00 PM' },
-    { day: 'Saturday', hours: '9:00 AM - 10:00 PM' },
-    { day: 'Sunday', hours: '9:00 AM - 10:00 PM' },
+    { day: 'Monday', hours: '9:00 AM - 9:30 PM' },
+    { day: 'Tuesday', hours: '9:00 AM - 9:30 PM' },
+    { day: 'Wednesday', hours: '9:00 AM - 9:30 PM' },
+    { day: 'Thursday', hours: '9:00 AM - 9:30 PM' },
+    { day: 'Friday', hours: '9:00 AM - 9:30 PM' },
+    { day: 'Saturday', hours: '9:00 AM - 9:30 PM' },
+    { day: 'Sunday', hours: '9:00 AM - 9:30 PM' },
   ],
   socials: [],
   heroFeatures: [
@@ -55,7 +55,7 @@ export const siteSettingsSeed: SiteSettings = {
   ],
   stats: [
     { label: 'Massage services', value: '03' },
-    { label: 'Open daily', value: '9AM-10PM' },
+    { label: 'Open daily', value: '9AM-9:30PM' },
     { label: 'Phone', value: '608-628-3432' },
   ],
 }
@@ -69,7 +69,7 @@ export const pagesSeed: PageDoc[] = [
       '7 DAY SPA is a local Madison massage studio focused on straightforward bodywork, a quiet environment, and flexible service lengths.',
     bodyContent:
       '7 DAY SPA serves guests looking for dependable massage care without a complicated booking experience. The studio offers Body Massage, Thai Massage, and Four Hands Massage in a relaxed, low-pressure setting on Odana Road.\n\nInside, the space is simple and welcoming: a small reception area, a quiet hallway, and private treatment rooms prepared for individual appointments. The experience is centered on comfort, affordability, and practical bodywork rather than a luxury hotel style presentation.\n\nThis site refresh keeps that same spirit. It presents the real studio, the real service menu, and the real pricing in a cleaner and more trustworthy format so guests can quickly understand what is offered before calling or visiting.',
-    highlights: ['Odana Road location in Madison', 'Body Massage, Thai Massage, and Four Hands Massage', 'Open daily from 9:00 AM to 10:00 PM'],
+    highlights: ['Odana Road location in Madison', 'Body Massage, Thai Massage, and Four Hands Massage', 'Open daily from 9:00 AM to 9:30 PM'],
     ctaLabel: 'View services',
     ctaHref: '/services',
   },
