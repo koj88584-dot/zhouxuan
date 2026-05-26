@@ -15,6 +15,12 @@ const hasPayloadDatabase =
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ['127.0.0.1'],
+  serverExternalPackages: [
+    '@payloadcms/db-postgres',
+    '@payloadcms/drizzle',
+    'drizzle-kit',
+    'esbuild',
+  ],
   experimental: {
     isrFlushToDisk: false,
   },
